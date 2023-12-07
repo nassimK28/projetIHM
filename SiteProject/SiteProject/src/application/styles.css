@@ -1,0 +1,93 @@
+.root {
+    -fx-font-family: 'Arial', sans-serif;
+    -fx-background-color: lightblue; /* ou toute autre couleur de votre choix */
+}
+
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.book-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(three-pass-box, #aaaaaa, 5, 0, 0, 0);
+}
+
+.info-box {
+    -fx-spacing: 5px;
+}
+
+.add-book-form {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(three-pass-box, #aaaaaa, 5, 0, 0, 0);
+}
+
+.add-book-form .text-field {
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #aaaaaa;
+}
+
+.add-book-form .button {
+    -fx-font-size: 14px;
+    -fx-background-color: #4caf50;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 8px 16px;
+    -fx-border-radius: 3px;
+}
+
+.add-book-form .button:hover {
+    -fx-background-color: #45a049;
+}
+
+.scroll-pane {
+    -fx-background: #f4f4f4;
+}
+
+.scroll-pane .viewport {
+    -fx-background: #f4f4f4;
+}
+
+.scroll-pane .content {
+    -fx-background: #f4f4f4;
+}
+/* styles.css */
+
+
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-family: 'Arial Black', Gadget, sans-serif;
+    -fx-text-fill: #0074cc; /* Bleu */
+    -fx-font-weight: bold; /* Texte en gras */
+    -fx-alignment: center;
+}
+
+.info-box {
+    -fx-spacing: 10px; /* Ajustez la valeur selon votre préférence pour l'espace entre les éléments */
+}
+
+.book-box .info-box .label {
+    -fx-font-weight: bold; /* Texte en gras pour les éléments d'information (titre, auteur, résumé) */
+}
+
+/*mode sombre */
+.dark-mode {
+    -fx-background-color: #333333;
+    -fx-text-fill: white;
+}
+/*light mode */
+.light-mode {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #87CEEB, #4682B4);
+    -fx-text-fill: black;
+}
+
+
+
