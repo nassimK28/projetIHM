@@ -1,6 +1,8 @@
 package application;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 //pour importer les images
 import java.net.URL;
@@ -16,15 +18,17 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.scene.input.KeyCode;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -40,7 +44,7 @@ public class TMUL_Accueil extends Application {
     // Boolean mode sombre/mode normal
     private boolean darkMode = false;
     
-    private StackPane mainContent;  // Declare mainContent as a class variable
+    private BorderPane mainContent;  // Declare mainContent as a class variable
     private HBox navigationBar;     // Declare navigationBar as a class variable
     
     @Override
@@ -184,9 +188,9 @@ public class TMUL_Accueil extends Application {
     }
 
     // Contenu principal
-    private StackPane createMainContent() {
-        StackPane mainContent = new StackPane();
-
+    private BorderPane  createMainContent() {
+    	BorderPane  mainContent = new BorderPane ();
+    	//BorderPane bp = new BorderPane();
         // images du fond :
         // VBox circuit innovation
         VBox leftBox = new VBox(10);
@@ -217,7 +221,67 @@ public class TMUL_Accueil extends Application {
         secondLine.setStyle("-fx-font-size: 30px; -fx-fill: white; -fx-font-family: 'Arial Black';");
 
         // Barre de recherche : À CHANGER
-        TextField searchField = new TextField();
+        VBox vbn = new VBox();
+        
+        BDDLivres bddLivres = new BDDLivres();
+        // Récupérer la liste des livres depuis la base de données
+     	ObservableList<BDDLivres.Livre> livreObservableList = FXCollections
+     				.observableArrayList(bddLivres.getLivresFromMongoDB());
+
+     	// Créer une liste déroulante des titres de livres avec le rendu personnalisé
+     	ComboBox<BDDLivres.Livre> livreComboBox = new ComboBox<>(livreObservableList);
+     	
+     	livreComboBox.setPromptText("Sélectionnez un livre");
+
+		livreComboBox.setCellFactory(new Callback<>() {
+			@Override
+			public ListCell<BDDLivres.Livre> call(ListView<BDDLivres.Livre> param) {
+				return new ListCell<>() {
+					@Override
+					protected void updateItem(BDDLivres.Livre item, boolean empty) {
+						super.updateItem(item, empty);
+
+						if (item == null || empty) {
+							setText(null);
+						} else {
+							setText(item.getTitle() + " - " + item.getAuthor());
+						}
+					}
+				};
+			}
+		});
+		//LivreDescription livreDescription;
+		EventHandler<MouseEvent> clickLivre = new EventHandler<>() {
+			public void handle(MouseEvent event) {
+				BDDLivres.Livre selectedLivre = livreComboBox.getSelectionModel().getSelectedItem();
+				if (selectedLivre != null) {
+					// Get the title of the selected book
+					String selectedTitle = selectedLivre.getTitle();
+
+					// Call the getBookByTitle method (assuming it's added in BDDLivres)
+					BDDLivres.Livre selectedBookByTitle = bddLivres.getBookByTitle(selectedTitle);
+
+					if (selectedBookByTitle != null) {
+						// Launch the LivreDescription stage with the corresponding book data
+						System.out.println("Le selected livre est : " + selectedBookByTitle);
+
+						LivreDescription livreDescription = new LivreDescription(selectedBookByTitle);
+						livreDescription.start(new Stage());
+
+						// Clear the selection in livreComboBox
+						livreComboBox.getSelectionModel().clearSelection();
+					} else {
+						System.out.println("Le livre avec le titre " + selectedTitle + " n'a pas été trouvé.");
+					}
+				}
+			}
+		};
+
+		livreComboBox.addEventHandler(MouseEvent.MOUSE_CLICKED, clickLivre);
+		vbn.setAlignment(Pos.CENTER_RIGHT);
+		vbn.getChildren().addAll(livreComboBox);	
+        
+        /*TextField searchField = new TextField();
         searchField.setPromptText("Recherchez ici...");
         searchField.setStyle("-fx-background-color: rgba(255, 255, 255, 0.7); -fx-text-fill: black; -fx-pref-height: 60px; -fx-font-size: 20px; -fx-pref-width: 400px; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-border-color: #333;");
 
@@ -231,17 +295,21 @@ public class TMUL_Accueil extends Application {
                 }
             }
         });
-
-
+		*/
+		
 
         // Text label en dessous de la barre
         Text additionalTextLabel = new Text("Tous les livres du monde... À portée de clic !");
         additionalTextLabel.setStyle("-fx-font-size: 20px; -fx-fill: white;");
 
-        centerBox.getChildren().addAll(textLabel, secondLine, searchField, additionalTextLabel);
-
+        centerBox.getChildren().addAll(textLabel, secondLine,  vbn, additionalTextLabel);
+        
+        mainContent.setLeft(leftBox);
+        mainContent.setRight(rightBox);
+        mainContent.setCenter(centerBox);
+       
         // Layout de la page en faisant attention à la superposition
-        mainContent.getChildren().addAll(leftBox, centerBox, rightBox);
+        //mainContent.getChildren().addAll(leftBox, centerBox,rightBox);
 
         // Fond en dégradé avec les couleurs du site
         mainContent.setBackground(new Background(new BackgroundFill(
@@ -249,9 +317,9 @@ public class TMUL_Accueil extends Application {
                         new Stop(0, javafx.scene.paint.Color.web("#87CEEB")),
                         new Stop(1, javafx.scene.paint.Color.web("#4682B4"))), null, null), null));
 
-        mainContent.setAlignment(Pos.CENTER);
+        //mainContent.setAlignment(Pos.CENTER);
         
- 
+        BorderPane.setMargin(mainContent, new Insets(10)); // Adjust the insets as needed
 
         return mainContent;
     }

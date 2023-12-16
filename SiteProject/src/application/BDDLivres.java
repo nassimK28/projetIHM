@@ -16,7 +16,7 @@ import java.util.Locale;
 
 public class BDDLivres {
 
-	private static Livre selectedBook;
+	static Livre selectedBook;
 	private static String uri = "mongodb+srv://moshin:cQzC88jHVRKq734y@cluster0.yrxetap.mongodb.net/";
 	private static List<Livre> livreList;
 
@@ -46,7 +46,7 @@ public class BDDLivres {
 		}
 	}
 
-	public List<Livre> getLivresFromMongoDB() {
+	public static List<Livre> getLivresFromMongoDB() {
 		List<Livre> livreList = new ArrayList<>(); // Declare and initialize the list
 
 		try (MongoClient mongoClient = MongoClients.create(uri)) {
@@ -54,7 +54,13 @@ public class BDDLivres {
 			MongoCollection<Document> collection = database.getCollection("books");
 
 			for (Document doc : collection.find()) {
-				Livre livre = convertDocumentToLivre(doc);
+				Livre livre = null;
+				try {
+					livre = convertDocumentToLivre(doc);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				livreList.add(livre);
 			}
 
@@ -65,7 +71,7 @@ public class BDDLivres {
 		return livreList;
 	}
 
-	private Livre convertDocumentToLivre(Document doc) {
+	private static Livre convertDocumentToLivre(Document doc) {
 		String title = doc.getString("title");
 		List<String> author = doc.getList("author", String.class);
 		List<String> genre = doc.getList("genre", String.class);
@@ -96,6 +102,9 @@ public class BDDLivres {
 
 			// Get the first three books from the shuffled list
 			threeRandomBooks = new ArrayList<>(allBooks.subList(0, 3));
+		} else {
+			// If there are fewer than three remaining books, return all remaining books
+			threeRandomBooks = new ArrayList<>(allBooks);
 		}
 
 		return threeRandomBooks;
@@ -189,5 +198,29 @@ public class BDDLivres {
 
 	public Livre getSelectedBook() {
 		return BDDLivres.selectedBook;
+	}
+
+	public List<String> extractTitles(List<Livre> livreList) {
+		List<String> titles = new ArrayList<>();
+		for (Livre livre : livreList) {
+			titles.add(livre.getTitle());
+		}
+		return titles;
+	}
+
+	public void updateSelectedBook(Livre book) {
+		setSelectedBook(book);
+	}
+
+	public Livre getBookByTitle(String title) {
+		List<Livre> allBooks = getLivresFromMongoDB();
+
+		for (Livre book : allBooks) {
+			if (book.getTitle().equals(title)) {
+				return book;
+			}
+		}
+
+		return null; // Book not found
 	}
 }

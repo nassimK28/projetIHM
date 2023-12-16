@@ -23,9 +23,13 @@ import javafx.stage.Stage;
 
 public class LivreDescription extends Application {
 
-	private BDDLivres.Livre selectedBook;
+	private Livre selectedBook;
 	private List<BDDLivres.Livre> threeRandBooks;
 	private List<Livre> livreList;
+
+	public LivreDescription(Livre selectedBook) {
+		this.selectedBook = selectedBook;
+	}
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -35,13 +39,9 @@ public class LivreDescription extends Application {
 		livreList = bddLivres.getLivresFromMongoDB();
 		System.out.println("Livre list : " + livreList);
 
-		Random random = new Random();
-		int rand = random.nextInt(livreList.size());
-		bddLivres.setSelectedBook(livreList.get(rand));
-		selectedBook = bddLivres.getSelectedBook();
-
 		// Get three random books
 		threeRandBooks = bddLivres.getThreeRandomBooks(selectedBook);
+		System.out.println("Le selected book est : " + selectedBook);
 		System.out.println("Les trois livres aléatoires sont : " + threeRandBooks);
 
 		// Le layout final
@@ -205,6 +205,49 @@ public class LivreDescription extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
+	}
+
+	public void setSelectedBook(Livre selectedBook) {
+		System.out.println("Le livre choisi a été changé");
+		BDDLivres.selectedBook = selectedBook;
+	}
+
+	private void handleTitleClick(Livre book) {
+		BDDLivres bddLivres = new BDDLivres();
+		bddLivres.updateSelectedBook(book);
+		selectedBook = bddLivres.getSelectedBook();
+	}
+
+	private void createTitleLabels(VBox bookCoverContainer) {
+		for (int i = 0; i < 3; i++) {
+			Livre bookDisplayed = threeRandBooks.get(i);
+			Image bookImage = new Image(bookDisplayed.getCoverImage());
+			ImageView bookCoverC = new ImageView(bookImage);
+			bookCoverC.setFitWidth(120);
+			bookCoverC.setFitHeight(180);
+
+			// Create a label for the title and handle the click event
+			Label titleLabel = new Label(bookDisplayed.getTitle());
+			titleLabel.setStyle("-fx-font-family: 'Lucida Calligraphy'; -fx-font-size: 12px; -fx-underline: true;");
+
+			// Handle title click event
+			titleLabel.setOnMouseClicked(event -> handleTitleClick(bookDisplayed));
+
+			VBox bookInfoContainer = new VBox(bookCoverC, titleLabel);
+			bookInfoContainer.setAlignment(Pos.CENTER);
+			bookCoverContainer.getChildren().add(bookInfoContainer);
+
+			VBox.setMargin(bookInfoContainer, new Insets(5));
+		}
+	}
+
+	public Livre getSelectedBook() {
+		return selectedBook;
+	}
+
+	public void showLivreDescription(Stage primaryStage, BDDLivres.Livre selectedLivre) {
+		this.selectedBook = selectedLivre;
+		start(primaryStage);
 	}
 
 }

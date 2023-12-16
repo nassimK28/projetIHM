@@ -1,0 +1,92 @@
+package application;
+
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.util.Callback;
+
+public class ListeLivres extends Application {
+
+	private BDDLivres bddLivres = new BDDLivres();
+	private LivreDescription livreDescription;
+
+	public static void main(String[] args) {
+		launch(args);
+	}
+
+	@Override
+	public void start(Stage primaryStage) {
+		primaryStage.setTitle("Liste déroulante des livres");
+
+		VBox root = new VBox();
+
+		// Récupérer la liste des livres depuis la base de données
+		ObservableList<BDDLivres.Livre> livreObservableList = FXCollections
+				.observableArrayList(bddLivres.getLivresFromMongoDB());
+
+		// Créer une liste déroulante des titres de livres avec le rendu personnalisé
+		ComboBox<BDDLivres.Livre> livreComboBox = new ComboBox<>(livreObservableList);
+
+		livreComboBox.setPromptText("Sélectionnez un livre");
+
+		livreComboBox.setCellFactory(new Callback<>() {
+			@Override
+			public ListCell<BDDLivres.Livre> call(ListView<BDDLivres.Livre> param) {
+				return new ListCell<>() {
+					@Override
+					protected void updateItem(BDDLivres.Livre item, boolean empty) {
+						super.updateItem(item, empty);
+
+						if (item == null || empty) {
+							setText(null);
+						} else {
+							setText(item.getTitle() + " - " + item.getAuthor());
+						}
+					}
+				};
+			}
+		});
+
+		EventHandler<MouseEvent> clickLivre = new EventHandler<>() {
+			public void handle(MouseEvent event) {
+				BDDLivres.Livre selectedLivre = livreComboBox.getSelectionModel().getSelectedItem();
+				if (selectedLivre != null) {
+					// Get the title of the selected book
+					String selectedTitle = selectedLivre.getTitle();
+
+					// Call the getBookByTitle method (assuming it's added in BDDLivres)
+					BDDLivres.Livre selectedBookByTitle = bddLivres.getBookByTitle(selectedTitle);
+
+					if (selectedBookByTitle != null) {
+						// Launch the LivreDescription stage with the corresponding book data
+						System.out.println("Le selected livre est : " + selectedBookByTitle);
+
+						livreDescription = new LivreDescription(selectedBookByTitle);
+						livreDescription.start(new Stage());
+
+						// Clear the selection in livreComboBox
+						livreComboBox.getSelectionModel().clearSelection();
+					} else {
+						System.out.println("Le livre avec le titre " + selectedTitle + " n'a pas été trouvé.");
+					}
+				}
+			}
+		};
+
+		livreComboBox.addEventHandler(MouseEvent.MOUSE_CLICKED, clickLivre);
+
+		root.getChildren().addAll(livreComboBox);
+		Scene scene = new Scene(root, 300, 200);
+		primaryStage.setScene(scene);
+
+		primaryStage.show();
+	}
+}
