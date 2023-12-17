@@ -60,35 +60,40 @@ public class NaviBar {
 
         hb.setPrefHeight(35);
         hb.getChildren().addAll(livres, deNous, boutique, blog, seConnecter);
-
+        
+        //changer la couleur du bouton lors de l'entrée du curseur
         EventHandler<MouseEvent> onButton1 = new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 livres.setCursor(Cursor.HAND);
                 livres.setStyle("-fx-background-color: skyblue;");
             }
         };
-
+        
+        //changer la couleur du bouton lors de l'entrée du curseur
         EventHandler<MouseEvent> onButton2 = new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 deNous.setCursor(Cursor.HAND);
                 deNous.setStyle("-fx-background-color: skyblue;");
             }
         };
-
+        
+        //changer la couleur du bouton lors de l'entrée du curseur
         EventHandler<MouseEvent> onButton3 = new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 boutique.setCursor(Cursor.HAND);
                 boutique.setStyle("-fx-background-color: skyblue;");
             }
         };
-
+        
+        //changer la couleur du bouton lors de l'entrée du curseur
         EventHandler<MouseEvent> onButton4 = new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 blog.setCursor(Cursor.HAND);
                 blog.setStyle("-fx-background-color: skyblue;");
             }
         };
-
+        
+        //changer la couleur du bouton lors de l'entrée du curseur 
         EventHandler<MouseEvent> onButton5 = new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 seConnecter.setCursor(Cursor.HAND);
@@ -101,31 +106,36 @@ public class NaviBar {
         boutique.addEventHandler(MouseEvent.MOUSE_ENTERED, onButton3);
         blog.addEventHandler(MouseEvent.MOUSE_ENTERED, onButton4);
         seConnecter.addEventHandler(MouseEvent.MOUSE_ENTERED, onButton5);
-
+        
+        //remettre la couleur originale du bouton lors de la sortie du curseur
         EventHandler<MouseEvent> exitButton1 = new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 livres.setStyle("-fx-background-color: lightblue;");
             }
         };
-
+        
+        //remettre la couleur originale du bouton lors de la sortie du curseur
         EventHandler<MouseEvent> exitButton2 = new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 deNous.setStyle("-fx-background-color: lightblue;");
             }
         };
-
+        
+        //remettre la couleur originale du bouton lors de la sortie du curseur
         EventHandler<MouseEvent> exitButton3 = new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 boutique.setStyle("-fx-background-color: lightblue;");
             }
         };
-
+        
+        //remettre la couleur originale du bouton lors de la sortie du curseur
         EventHandler<MouseEvent> exitButton4 = new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 blog.setStyle("-fx-background-color: lightblue;");
             }
         };
-
+        
+        //remettre la couleur originale du bouton lors de la sortie du curseur
         EventHandler<MouseEvent> exitButton5 = new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 seConnecter.setStyle("-fx-background-color: lightblue;");
@@ -137,13 +147,15 @@ public class NaviBar {
         boutique.addEventHandler(MouseEvent.MOUSE_EXITED, exitButton3);
         blog.addEventHandler(MouseEvent.MOUSE_EXITED, exitButton4);
         seConnecter.addEventHandler(MouseEvent.MOUSE_EXITED, exitButton5);
-
+        
+     // evenement pour le bouton boutique 
         EventHandler<MouseEvent> saleShop = new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 hostServices.showDocument("https://www.amazon.fr/livre-achat-occasion-litterature-roman/b?ie=UTF8&node=301061");
             }
         };
-
+        
+     // evenement pour le bouton blog 
         EventHandler<MouseEvent> blogSent = new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 hostServices.showDocument("https://blog.trouvemoiunlivre.com/");

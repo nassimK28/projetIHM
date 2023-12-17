@@ -190,7 +190,7 @@ public class TMUL_Accueil extends Application {
     // Contenu principal
     private BorderPane  createMainContent() {
     	BorderPane  mainContent = new BorderPane ();
-    	//BorderPane bp = new BorderPane();
+   
         // images du fond :
         // VBox circuit innovation
         VBox leftBox = new VBox(10);
@@ -199,7 +199,7 @@ public class TMUL_Accueil extends Application {
         leftBox.getChildren().add(circuitImage);
         leftBox.setStyle("-fx-background-color: " + TRANSPARENT + ";");
 
-        // ... (Other content remains unchanged)
+        
 
         // VBox page déchirée
         VBox rightBox = new VBox(10);
@@ -220,10 +220,11 @@ public class TMUL_Accueil extends Application {
         Text secondLine = new Text("la lecture...");
         secondLine.setStyle("-fx-font-size: 30px; -fx-fill: white; -fx-font-family: 'Arial Black';");
 
-        // Barre de recherche : À CHANGER
+        // Barre de recherche 
         VBox vbn = new VBox();
         
         BDDLivres bddLivres = new BDDLivres();
+        
         // Récupérer la liste des livres depuis la base de données
      	ObservableList<BDDLivres.Livre> livreObservableList = FXCollections
      				.observableArrayList(bddLivres.getLivresFromMongoDB());
@@ -250,7 +251,8 @@ public class TMUL_Accueil extends Application {
 				};
 			}
 		});
-		//LivreDescription livreDescription;
+		
+		
 		EventHandler<MouseEvent> clickLivre = new EventHandler<>() {
 			public void handle(MouseEvent event) {
 				BDDLivres.Livre selectedLivre = livreComboBox.getSelectionModel().getSelectedItem();
@@ -277,26 +279,10 @@ public class TMUL_Accueil extends Application {
 			}
 		};
 
+
 		livreComboBox.addEventHandler(MouseEvent.MOUSE_CLICKED, clickLivre);
 		vbn.setAlignment(Pos.CENTER_RIGHT);
 		vbn.getChildren().addAll(livreComboBox);	
-        
-        /*TextField searchField = new TextField();
-        searchField.setPromptText("Recherchez ici...");
-        searchField.setStyle("-fx-background-color: rgba(255, 255, 255, 0.7); -fx-text-fill: black; -fx-pref-height: 60px; -fx-font-size: 20px; -fx-pref-width: 400px; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-border-color: #333;");
-
-        // EVENT HANDLER BARRE DE RECHERCHE
-        searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode() == KeyCode.ENTER) {
-                    // You can perform search or filter logic here based on the searchField.getText()
-                    System.out.println("Search: " + searchField.getText());
-                }
-            }
-        });
-		*/
-		
 
         // Text label en dessous de la barre
         Text additionalTextLabel = new Text("Tous les livres du monde... À portée de clic !");
@@ -304,12 +290,11 @@ public class TMUL_Accueil extends Application {
 
         centerBox.getChildren().addAll(textLabel, secondLine,  vbn, additionalTextLabel);
         
+        //mettre les positions de chaque child du borderPane 
         mainContent.setLeft(leftBox);
         mainContent.setRight(rightBox);
         mainContent.setCenter(centerBox);
-       
-        // Layout de la page en faisant attention à la superposition
-        //mainContent.getChildren().addAll(leftBox, centerBox,rightBox);
+        
 
         // Fond en dégradé avec les couleurs du site
         mainContent.setBackground(new Background(new BackgroundFill(
